@@ -11,7 +11,7 @@ class FavScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Contacts'),
+          title: const Text('Favorites'),
         ),
         body: ValueListenableBuilder(
           valueListenable: CrudOperatons.contacts,
@@ -21,12 +21,18 @@ class FavScreen extends StatelessWidget {
                   (element) => element.fav == true,
                 )
                 .toList();
-            return ListView.builder(
-              itemCount: filteredList.length,
-              itemBuilder: (context, index) {
-                return contactTile(context, filteredList[index]);
-              },
-            );
+            if (filteredList.isEmpty) {
+              return Center(
+                child: Text('No Favorite Contacts Available'),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: filteredList.length,
+                itemBuilder: (context, index) {
+                  return contactTile(context, filteredList[index]);
+                },
+              );
+            }
           },
         ),
       ),

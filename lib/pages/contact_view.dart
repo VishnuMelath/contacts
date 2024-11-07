@@ -6,6 +6,8 @@ import 'package:contacts/pages/add_update_page.dart';
 import 'package:contacts/widgets/custom_alertdialogue.dart';
 import 'package:flutter/material.dart';
 
+import '../method_channel/call_service.dart';
+
 class ContactView extends StatefulWidget {
   final ContactsModel contactsModel;
   const ContactView({super.key, required this.contactsModel});
@@ -91,7 +93,7 @@ class _ContactViewState extends State<ContactView> {
               ),
               trailing: IconButton(
                   onPressed: () {
-                    //todo call fn
+                    CallService().makePhoneCall(e, context);
                   },
                   icon: const Icon(Icons.phone)),
             ),

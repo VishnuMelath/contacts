@@ -15,6 +15,11 @@ class HomeScreen extends StatelessWidget {
         body: ValueListenableBuilder(
           valueListenable: CrudOperatons.contacts,
           builder: (context, value, child) {
+            if (value.isEmpty) {
+              return Center(
+                child: Text('No Contacts Available'),
+              );
+            }
             return ListView.builder(
               itemCount: value.length,
               itemBuilder: (context, index) {

@@ -129,42 +129,44 @@ class _AddUpdateContactPageState extends State<AddUpdateContactPage> {
                     TextEditingController controller =
                         entry.value['controller'];
                     String countryCode = entry.value['countryCode'];
-                    return Row(
-                      children: [
-                        CountryCodePicker(
-                          initialSelection: countryCode,
-                          showFlag: true,
-                          onChanged: (country) {
-                            setState(() {
-                              _mobileFields[index]['countryCode'] =
-                                  country.dialCode!;
-                            });
-                          },
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            controller: controller,
-                            decoration: const InputDecoration(
-                              labelText: 'Mobile Number',
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.phone,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a mobile number';
-                              }
-                              return null;
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        children: [
+                          CountryCodePicker(
+                            initialSelection: countryCode,
+                            showFlag: true,
+                            onChanged: (country) {
+                              setState(() {
+                                _mobileFields[index]['countryCode'] =
+                                    country.dialCode!;
+                              });
                             },
                           ),
-                        ),
-                        if (index >
-                            0) // Show remove button for additional fields only
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle,
-                                color: Colors.red),
-                            onPressed: () => _removeMobileField(index),
+                          Expanded(
+                            child: TextFormField(
+                              controller: controller,
+                              decoration: const InputDecoration(
+                                labelText: 'Mobile Number',
+                                border: OutlineInputBorder(),
+                              ),
+                              keyboardType: TextInputType.phone,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a mobile number';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                      ],
+                          if (index > 0)
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle,
+                                  color: Colors.red),
+                              onPressed: () => _removeMobileField(index),
+                            ),
+                        ],
+                      ),
                     );
                   }),
                   TextButton.icon(
