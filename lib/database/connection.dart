@@ -11,7 +11,7 @@ class DatabaseConnection {
 
   _createTable(Database database, int version) async {
     String sql =
-        "create table student(firstname text,surname text,numbers text,company text)";
+        "create table contacts(id text primary key,firstname text,surname text,numbers text,company text,fav text)";
     await database.execute(sql);
   }
 }

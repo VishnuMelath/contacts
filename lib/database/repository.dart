@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:contacts/database/connection.dart';
+import 'package:contacts/datamodel/contacts_model.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-class CrudOperatons {
+class CrudOperatons extends ChangeNotifier {
+  static ValueNotifier<List<ContactsModel>> contacts = ValueNotifier([]);
   late DatabaseConnection _databaseConnection;
   CrudOperatons() {
     _databaseConnection = DatabaseConnection();
@@ -16,43 +21,54 @@ class CrudOperatons {
     }
   }
 
-  //inserting data
-  insertData(data) async {
+  //inserting contact
+  Future addContact(ContactsModel data) async {
     var connection = await database;
-    return await connection?.insert('contacts', data);
+    await connection?.insert('contacts', data.toMap());
+    await loadContact();
   }
 
 //accessing contacts table data
-  returnData() async {
+  Future<void> loadContact() async {
     var connection = await database;
     var data = await connection?.rawQuery("select * from contacts;");
-    return data?.map(
-      (e) {
-        return e;
-      },
-    ).toList();
+    log(data.toString());
+    var list = data?.map(
+          (e) {
+            return ContactsModel.fromMap(e);
+          },
+        ).toList() ??
+        [];
+    sortByFirstName(list);
+    contacts.value = list;
+    notifyListeners();
   }
 
-  //accessing a contacts
+  //accessing a contact
   contactsData(id) async {
     var connection = await database;
-    return connection?.query('contacts', where: 'admno=?', whereArgs: [id]);
+    return connection?.query('contacts', where: 'id=?', whereArgs: [id]);
   }
 
-//delete a contacts
-  contactsDelete(id) async {
+//delete a contact
+  Future contactsDelete(id) async {
     var connection = await database;
-    return connection?.rawDelete("delete from contacts where admno='$id';");
+    await connection?.rawDelete("delete from contacts where id='$id';");
+    await loadContact();
   }
 
   //update a contacts
-  contactsUpdate(Map data, id) async {
-    var connecttion = await database;
-    var name = data['name'];
-    var age = data['age'];
-    var admno = data['admno'];
-    var photo = data['photo'];
-    return connecttion?.rawUpdate(
-        "update contacts set name='$name',age='$age',admno='$admno',photo='$photo' where admno='$id';");
+  Future contactsUpdate(ContactsModel data) async {
+    log(data.toMap().toString());
+    var connection = await database;
+    await connection
+        ?.update('contacts', data.toMap(), where: 'id=?', whereArgs: [data.id]);
+    await loadContact();
+  }
+
+  void sortByFirstName(List<ContactsModel> people, {bool ascending = true}) {
+    people.sort((a, b) => ascending
+        ? a.firstName.toLowerCase().compareTo(b.firstName.toLowerCase())
+        : b.firstName.toLowerCase().compareTo(a.firstName.toLowerCase()));
   }
 }

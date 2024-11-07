@@ -1,4 +1,4 @@
-import 'package:contacts/splash_screen.dart';
+import 'package:contacts/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
